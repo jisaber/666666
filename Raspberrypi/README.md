@@ -9,3 +9,9 @@ CPU一直在60-70之间徘徊，大概在66%左右，内存占用不大，就是
 
 ### 保护隐私清楚命令行历史记录！
 rm -f  ~/.bash_history  这个命令会清除当前用户的所有历史记录，需要重开终端。至于为什么，“你他妈是在难为我胖虎”
+
+### 使用ps ax可以查看每个进程的pid
+0
+### 出现dpkg：错误：正在解析文件 '/var/lib/dpkg/updates/0015' 第 0 行附近:在字段名 #pa
+sudo rm /var/lib/dpkg/updates/*  
+sudo apt-get update
