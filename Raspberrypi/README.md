@@ -15,3 +15,19 @@ rm -f  ~/.bash_history  这个命令会清除当前用户的所有历史记录�
 ### 出现dpkg：错误：正在解析文件 '/var/lib/dpkg/updates/0015' 第 0 行附近:在字段名 #pa
 sudo rm /var/lib/dpkg/updates/*  
 sudo apt-get update
+
+### 出现包依赖关系错误
+正在读取软件包列表... 完成
+正在分析软件包的依赖关系树       
+正在读取状态信息... 完成       
+您可能需要运行“apt-get -f install”来纠正下列错误：
+下列软件包有未满足的依赖关系：
+ sogoupinyin : 依赖: libopencc2 但无法安装它 或
+                       libopencc1 但是它将不会被安装
+               依赖: fcitx-libs (>= 4.2.7) 但是它将不会被安装
+               依赖: fcitx-libs-qt (>= 4.2.7) 但是它将不会被安装
+               依赖: libqtwebkit4 但是它将不会被安装
+E: 有未能满足的依赖关系。请尝试不指明软件包的名字来运行“apt-get -f install”(也可以指定一个解决办法)。  
+
+直接sudo apt-get -f install即可
+
