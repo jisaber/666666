@@ -26,7 +26,7 @@ from tkinter.filedialog import *
 
 
 #以下用于数据处理
-import xlrd#用于数据的读，这个地方有个Bug不能处理xlsx文件，只能处理xls文件，懒得解决了，就这样吧
+import xlrd#用于数据的读
 import xlwt#用于数据的写
 
 import numpy as np
@@ -42,11 +42,14 @@ from lifelines.statistics import logrank_test
 from PIL import Image
 import matplotlib.pyplot as plt
 from pylab import *
+import re
 
 
 
 #以下类用于文件操作
 import os
+
+
 #------函数开始-----
 global filename
 global path
@@ -61,6 +64,7 @@ global drug
 
 global sexlist
 global xingbie
+
 
 filename=None
 file=None
@@ -125,13 +129,14 @@ def myguanyu():
 
 #以上的为文件处理模块
 
-#以下的为数据处理模块 
-
+#以下的为数据处理模块
+    
 def zhuanhuan():
+
     global path
     global file
     global file1
-    global ext
+    global ext 
     global date
     global sex
     global drug
@@ -143,6 +148,7 @@ def zhuanhuan():
         
 
     #filename="C://Users//ZjuTH//Desktop//暑假实验//表格//lifespan.xls"
+    filedir,filetotalname= os.path.split(filename)
     file1,ext = os.path.splitext(filename)    
     try:
         sample=int(samplex.get())#每组有几管
@@ -215,6 +221,14 @@ def zhuanhuan():
     xingbie=[]
     for sexi in range(sex):
         xingbie.append(table.cell(sexi*sample+2,2).value)
+
+    global nongdu
+    nongdu = []
+   
+    for drugi in range(drug):
+        nongdu.append(table.cell(drugi*sex*sample+2,1).value)
+        #print(nongdu)l老铁没毛病
+
     try:
         for sexi in range(sex):
             for drugi in range(drug):
@@ -272,10 +286,12 @@ def zhuanhuan():
                 for i in range(int(sexlist[sexi][drugi][dayi])):
                     templist.append(daylist[dayi])
                     templist2.append(1)
+
             #一个浓度转换完成
-            datalist.append(drugi)
-                    
-            datalist.append(xingbie[sexi])
+            datalist.append(nongdu[drugi])
+            #这个时候就把原先的0，1，2.。。换成对照，最低之类的单词
+
+            datalist.append(re.sub('[^a-zA-Z]','',xingbie[sexi]))
             
             datalist.append(len(templist))
             datalist.append(np.mean(templist))
@@ -283,6 +299,8 @@ def zhuanhuan():
             datalist.append(np.min(templist).tolist())
             datalist.append(np.max(templist).tolist())
             #print("\n")
+
+            #这两个是用来画图用和计算P-value的
             eventlist.append(templist2)
             survivallist.append(templist)
 
@@ -377,9 +395,13 @@ def zhuanhuan():
     #以下用于写画图用的数据
     sheet2.write(0,0,'DAY')#写DAY
 
-    for sexi in range(sex):#写第一行的标题
+    for sexi in range(sex):
+        #写第一行的标题
+        #2018.03.01修改为动态显示不是固定的F11之类的，改成F对照组
+        #这里使用了一次正则表达式去掉F1里面的1
         for drugi in range(drug):
-            sheet2.write(0,sexi*drug+drugi+1,str(xingbie[sexi])+str(drugi))        
+            sheet2.write(0,sexi*drug+drugi+1,
+                         re.sub('[^a-zA-Z]','',str(xingbie[sexi]))+str(nongdu[drugi]))        
 
     for i in range(len(daylist)):
         sheet2.write(i+1,0,daylist[i])
@@ -429,6 +451,7 @@ def zhuanhuan():
             
 
     #保存该excel文件,有同名文件时直接覆盖
+    #20180301修改，添加了一个全局变量button控制计算次数，每次计算都会重新生成新的文件
     try:
         workbook.save(file1+'Data'+ext)
         showinfo(title="状态",message="处理成功！文件目录:"+'\n'+file1)
