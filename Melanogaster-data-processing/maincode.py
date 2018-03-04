@@ -39,6 +39,7 @@ from lifelines.statistics import logrank_test
 
 
 #以下类用于画图
+#有一个叫做pyechart的插件，或者echat的库，据说画图很好看，懒得弄了，交给下面的师弟吧
 from PIL import Image
 import matplotlib.pyplot as plt
 from pylab import *
@@ -130,9 +131,10 @@ def myguanyu():
 #以上的为文件处理模块
 
 #以下的为数据处理模块
-    
-def zhuanhuan():
+sheetname = None
 
+def zhuanhuan():
+    global sheetname
     global path
     global file
     global file1
@@ -163,6 +165,15 @@ def zhuanhuan():
     table = data.sheets()[0] # 打开第一张表
     nrows = table.nrows # 获取表的行数
     ncols = table.ncols# 获取表的列数
+    sheetname = data.sheet_names()[0]
+    #print(data.sheet_names()[0])
+    #print(data.nsheets)
+    
+    #下面两个这个返回的是sheet的指针地址，也就意味着这个返回的是一个表格，
+    #可以在这个基础上进行操错，如*.nrows等等
+    #print(data.sheet_by_index(1))
+    #print(xl.sheet_by_name(u"目录"))
+    
     #print(nrows)
     #print(ncols)
     #print(filename)
@@ -453,7 +464,7 @@ def zhuanhuan():
     #保存该excel文件,有同名文件时直接覆盖
     #20180301修改，添加了一个全局变量button控制计算次数，每次计算都会重新生成新的文件
     try:
-        workbook.save(file1+'Data'+ext)
+        workbook.save(file1+str(sheetname)+'Data'+ext)
         showinfo(title="状态",message="处理成功！文件目录:"+'\n'+file1)
     except Exception as e:
         showinfo(title="状态",message=str(e)+'\n'+'可能相同文件名的文件已经在Excel中打开，请关闭之后再试试')
@@ -492,7 +503,7 @@ def myOASIS():
                                   sexlist[sexi][drugi][i])  
 
     try:
-        workbookOASIS.save(file1+'OASIS'+ext)
+        workbookOASIS.save(file1+str(sheetname)+'OASIS'+ext)
         showinfo(title="状态",message='保存OASIS成功,文件目录为：'+'\n'+file1)
     except Exception as e:
         showinfo(title="状态",message=str(e)+'\n'+'保存OASIS失败'+'\n'+'可能相同文件名的文件已经在Excel中打开，请关闭之后再试试')
@@ -532,7 +543,7 @@ def myCOX():
     
     
     try:
-        workbookCOX.save(file1+'COX'+ext)
+        workbookCOX.save(file1+str(sheetname)+'COX'+ext)
         showinfo(title="状态",message='保存COX成功,文件目录为：'+'\n'+file1)
     except Exception as e:
         showinfo(title="状态",message=str(e)+'\n'+'保存COX失败'+'\n'+'可能相同文件名的文件已经在Excel中打开，请关闭之后再试试')
