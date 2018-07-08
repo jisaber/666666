@@ -419,9 +419,14 @@ def zhuanhuan():
 
     for sexi in range(sex): #按行处理
         for drugi in range(drug):
-            for i in range(len(daylist)):
-                sheet2.write(i+1,sexi*drug+drugi+1,
+            for i in range(len(daylist)):#对比旧的版本，这个地方做了修改，把最后多余的0全部删除，省的一个一个l删，节省一秒是一秒
+                if tempsexlisttu1[sexi][drugi][i]==0:
+                    sheet2.write(i+1,sexi*drug+drugi+1,0)
+                    break
+                else:
+                    sheet2.write(i+1,sexi*drug+drugi+1,
                              tempsexlisttu1[sexi][drugi][i])
+       
 
 
                 
